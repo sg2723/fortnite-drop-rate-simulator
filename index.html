@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pirate Token — Auto-Respin & Monte Carlo Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top 3 KPI Cards -->
+    <section class="kpi-row">
+      <div class="panel kpi-card">
+        <span class="kpi-title">Chests Opened</span>
+        <div id="chestsCount" class="kpi-number">0</div>
+        <div id="expectedSub" class="kpi-sub">Expected: 137,500</div>
+      </div>
+
+      <div class="panel kpi-card">
+        <span class="kpi-title">Pirate Token Odds</span>
+        <div id="oddsRatioMain" class="kpi-number">1 / 137,500</div>
+        <div id="oddsPctSub" class="kpi-sub">0.000727% per chest</div>
+      </div>
+
+      <div class="panel kpi-card">
+        <span class="kpi-title">Rejected Special Drops</span>
+        <div id="rejectedDrops" class="kpi-number">0</div>
+        <div id="emptyChestsSub" class="kpi-sub">0 empty chests (98.40%)</div>
+      </div>
+    </section>
+
+    <!-- Middle 2-Column Stage: Left Wheel, Right Drop Log ("Found vs. Odds") -->
+    <main class="main-grid">
+      <section class="panel wheel-card">
+        <div class="wheel-stage">
+          <div class="top-pointer" aria-hidden="true">▼</div>
+          <canvas id="wheelCanvas" width="320" height="320"></canvas>
+        </div>
+        <div id="hitBanner" class="hit-banner hidden"></div>
+        <p class="wheel-caption">Log-scaled sectors for readability — actual odds are 1 in 137,500.</p>
+      </section>
+
+      <section class="panel log-card">
+        <div class="log-header">
+          <h2>Drop Log</h2>
+          <span class="log-subtitle">Found vs. Odds</span>
+        </div>
+        <div id="dropLogList" class="drop-list"></div>
+      </section>
+    </main>
+
+    <!-- Action Bar + Mode & Speed Pills -->
+    <section class="panel controls-card">
+      <div class="action-row">
+        <button id="huntBtn" class="action-btn">↻ Auto-Spin Until Pirate Token</button>
+        <button id="rollOneBtn" class="action-btn">Roll 1 Chest</button>
+        <button id="resetBtn" class="action-btn">Stop / Reset</button>
+      </div>
+
+      <div class="pill-groups">
+        <div class="pill-group">
+          <div class="group-label">Event Odds Mode</div>
+          <div class="pill-row" id="modePills">
+            <button type="button" class="pill-btn active" data-mode="regular">Regular (1×)</button>
+            <button type="button" class="pill-btn" data-mode="th15">Treasure Hour (1.5×)</button>
+            <button type="button" class="pill-btn" data-mode="th20">Special Hour (2×)</button>
+          </div>
+        </div>
+
+        <div class="pill-group">
+          <div class="group-label">Auto-Spin Speed</div>
+          <div class="pill-row" id="speedPills">
+            <button type="button" class="pill-btn" data-speed="1">Visual (1/spin)</button>
+            <button type="button" class="pill-btn active" data-speed="50">Fast (50/tick)</button>
+            <button type="button" class="pill-btn" data-speed="2500">Turbo (2,500/tick)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Test Run: 1,000 Chances + Right-Skewed Histogram + Match/Time Context -->
+    <section class="panel mc-card">
+      <div class="mc-top">
+        <div>
+          <h2>Test Run: 1,000 Chances</h2>
+          <p class="mc-desc">Runs 1,000 full hunts until Pirate Token drops and maps chest-count brackets.</p>
+        </div>
+        <button id="run1000Btn" class="action-btn primary-pill">Run 1,000 Chances</button>
+      </div>
+
+      <div class="mc-inputs">
+        <label class="mini-input" title="Average chests opened per match">
+          <span>Chests / Match</span>
+          <input id="chestsPerMatchInput" type="number" min="1" max="200" value="20" />
+        </label>
+        <label class="mini-input" title="Benchmark threshold (default 13,000 chests) to track early-luck runs">
+          <span>Under [Chests] Benchmark</span>
+          <input id="benchmarkInput" type="number" min="100" max="500000" step="500" value="13000" />
+        </label>
+      </div>
+
+      <div id="mcSummaryGrid" class="mc-summary-grid"></div>
+      <canvas id="histogramCanvas" width="760" height="210"></canvas>
+    </section>
+  </div>
+
+  <script src="simulation.js"></script>
+</body>
+</html>
